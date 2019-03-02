@@ -15,5 +15,17 @@ class IRONDOGS_API AIronPlayerController : public APlayerController
 	GENERATED_BODY()
 public:
 	AIronPlayerController();
+	virtual void SetupInputComponent() override;
+	virtual void BeginPlay() override;
+
+public:
+	void HorizontalMovement(float Amount);
+	void VerticalMovement(float Amount);
+
+	void LeftMousePressed();
+	void RightMousePressed();
 	
+public:
+	class APlayerPawn* IronPawn;
+
 };

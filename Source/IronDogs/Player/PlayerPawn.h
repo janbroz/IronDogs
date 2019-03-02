@@ -26,4 +26,13 @@ public:
 	// Called to bind functionality to input
 	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
 
+	virtual UPawnMovementComponent* GetMovementComponent() const override;	
+
+
+public:
+	class UCameraComponent* Camera;
+	class USpringArmComponent* CameraArm;
+
+	class UIronPawnMovementComponent* MovementComponent;
+
 };
