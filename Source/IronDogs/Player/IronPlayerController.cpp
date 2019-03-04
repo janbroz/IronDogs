@@ -3,10 +3,19 @@
 #include "IronPlayerController.h"
 #include "Player/PlayerPawn.h"
 #include "Player/IronPawnMovementComponent.h"
+#include "UObject/ConstructorHelpers.h"
+#include "Widgets/Player/PlayerHUDWidget.h"
+#include "Mechs/Mech.h"
 
 AIronPlayerController::AIronPlayerController()
 {
 	bShowMouseCursor = true;
+
+	static ConstructorHelpers::FObjectFinder<UClass> PlayerHUDClass_BP(TEXT("/Game/UI/PlayerHUD/PlayerHUD_BP.PlayerHUD_BP_C"));
+	if (PlayerHUDClass_BP.Object)
+	{
+		PlayerHUDClass = PlayerHUDClass_BP.Object;
+	}
 }
 
 void AIronPlayerController::SetupInputComponent()
@@ -25,18 +34,33 @@ void AIronPlayerController::BeginPlay()
 	Super::BeginPlay();
 
 	IronPawn = Cast<APlayerPawn>(GetPawn());
+	SpawnPlayerHUD();
+}
+
+void AIronPlayerController::SpawnPlayerHUD()
+{
+	if (PlayerHUDClass)
+	{
+		PlayerHUD = CreateWidget<UPlayerHUDWidget>(this, PlayerHUDClass);
+		if (PlayerHUD)
+		{
+			PlayerHUD->AddToViewport();
+		}
+	}
+}
+
+void AIronPlayerController::UpdateSelectedUnit_UI()
+{
+	if (PlayerHUD)
+	{
+		PlayerHUD->UpdateSelectedUnit(SelectedUnit);
+	}
 }
 
 void AIronPlayerController::HorizontalMovement(float Amount)
 {
 	if (IronPawn && Amount != 0.f)
 	{
-		//FVector NewLocation = IronPawn->GetActorLocation();
-		//FRotator Rotation = GetControlRotation();
-		//const FVector Direction = FRotationMatrix(Rotation).GetScaledAxis(EAxis::Y);
-		//NewLocation += Direction * 10.f * Amount;
-		//IronPawn->SetActorLocation(NewLocation);
-
 		IronPawn->MovementComponent->AddInputVector(FVector::RightVector * Amount);
 	}
 
@@ -46,22 +70,34 @@ void AIronPlayerController::VerticalMovement(float Amount)
 {
 	if (IronPawn && Amount != 0.f)
 	{
-		/*FVector NewLocation = IronPawn->GetActorLocation();
-		FRotator Rotation = GetControlRotation();
-		const FVector Direction = FRotationMatrix(Rotation).GetScaledAxis(EAxis::X);
-		NewLocation += Direction * 10.f * Amount;
-		IronPawn->SetActorLocation(NewLocation);*/
-
 		IronPawn->MovementComponent->AddInputVector(FVector::ForwardVector * Amount);
 	}
 }
 
 void AIronPlayerController::LeftMousePressed()
 {
-
+	FHitResult Hit;
+	GetHitResultUnderCursor(ECollisionChannel::ECC_Camera, true, Hit);
+	if (Hit.bBlockingHit)
+	{
+		AMech* HitMech = Cast<AMech>(Hit.GetActor());
+		if (HitMech)
+		{
+			SelectedUnit = HitMech;
+			UpdateSelectedUnit_UI();
+		}
+	}
 }
 
 void AIronPlayerController::RightMousePressed()
 {
-
+	FHitResult Hit;
+	GetHitResultUnderCursor(ECollisionChannel::ECC_Camera, true, Hit);
+	if (Hit.bBlockingHit)
+	{
+		if (SelectedUnit)
+		{
+			SelectedUnit->AttemptToMove(Hit.Location);
+		}
+	}
 }

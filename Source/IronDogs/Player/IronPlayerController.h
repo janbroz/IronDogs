@@ -18,14 +18,28 @@ public:
 	virtual void SetupInputComponent() override;
 	virtual void BeginPlay() override;
 
+private:
+	void SpawnPlayerHUD();
+	void UpdateSelectedUnit_UI();
+
 public:
 	void HorizontalMovement(float Amount);
 	void VerticalMovement(float Amount);
 
 	void LeftMousePressed();
 	void RightMousePressed();
+
 	
 public:
+	// This is the player pawn, not the selected mech.
 	class APlayerPawn* IronPawn;
+
+	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = Resources)
+		TArray<class AMech*> AvailableUnits;
+	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = Resources)
+		class AMech* SelectedUnit;
+
+	TSubclassOf<class UPlayerHUDWidget> PlayerHUDClass;
+	class UPlayerHUDWidget* PlayerHUD;
 
 };

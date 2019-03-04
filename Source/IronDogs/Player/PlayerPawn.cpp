@@ -13,7 +13,7 @@ APlayerPawn::APlayerPawn()
 
 	CameraArm = CreateDefaultSubobject<USpringArmComponent>(TEXT("Camera arm"));
 	CameraArm->SetupAttachment(RootComponent);
-	CameraArm->TargetArmLength = 1200.f;
+	CameraArm->TargetArmLength = 800.f;
 	CameraArm->bDoCollisionTest = false;
 	CameraArm->bAbsoluteRotation = true;
 	CameraArm->SetRelativeRotation(FRotator(-60.f, 0.f, 0.f));
