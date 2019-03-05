@@ -13,7 +13,7 @@ void AMechAIController::BeginPlay()
 {
 	Super::BeginPlay();
 
-	UE_LOG(LogTemp, Warning, TEXT("Begin play is working"));
+	//UE_LOG(LogTemp, Warning, TEXT("Begin play is working"));
 
 	/*UNavigationSystemV1* NavSys = FNavigationSystem::GetCurrent<UNavigationSystemV1>(GetWorld());
 	if (NavSys)

@@ -6,6 +6,7 @@
 #include "UObject/ConstructorHelpers.h"
 #include "Widgets/Player/PlayerHUDWidget.h"
 #include "Mechs/Mech.h"
+#include "Mechs/ActionGrid.h"
 
 AIronPlayerController::AIronPlayerController()
 {
@@ -16,6 +17,8 @@ AIronPlayerController::AIronPlayerController()
 	{
 		PlayerHUDClass = PlayerHUDClass_BP.Object;
 	}
+
+	GridClass = AActionGrid::StaticClass();
 }
 
 void AIronPlayerController::SetupInputComponent()
@@ -84,6 +87,23 @@ void AIronPlayerController::LeftMousePressed()
 		if (HitMech)
 		{
 			SelectedUnit = HitMech;
+			if (GridClass)
+			{
+				if (ActionGrid)
+				{
+					ActionGrid->SetActorLocation(HitMech->GetActorLocation());
+					ActionGrid->DrawActionGrid(HitMech);
+				}
+				else
+				{
+					ActionGrid = GetWorld()->SpawnActor<AActionGrid>(GridClass, HitMech->GetActorLocation(), FRotator::ZeroRotator, FActorSpawnParameters());
+					if (ActionGrid)
+					{
+						ActionGrid->DrawActionGrid(HitMech);
+					}
+				}
+			}
+
 			UpdateSelectedUnit_UI();
 		}
 	}

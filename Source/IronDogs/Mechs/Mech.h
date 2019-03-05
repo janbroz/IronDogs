@@ -30,5 +30,9 @@ public:
 	void AttemptToMove(FVector& NewLoc);
 
 
+public:
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+		int32 AP;
+
 
 };
