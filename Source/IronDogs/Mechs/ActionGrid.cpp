@@ -66,11 +66,16 @@ void AActionGrid::DrawActionGrid(class AMech* SelectedMech)
 {
 	for (auto& Slot : GridSlotArray)
 	{
-		Slot->Destroy();
+		if (Slot)
+		{
+			Slot->Destroy();
+		}
 	}
-
-	Columns = SelectedMech->AP;
-	Rows = SelectedMech->AP;
+	if (SelectedMech)
+	{
+		Columns = SelectedMech->AP;
+		Rows = SelectedMech->AP;
+	}
 
 	DrawGrid();
 }

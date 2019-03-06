@@ -7,6 +7,7 @@
 #include "Widgets/Player/PlayerHUDWidget.h"
 #include "Mechs/Mech.h"
 #include "Mechs/ActionGrid.h"
+#include "GenericPlatformMath.h"
 
 AIronPlayerController::AIronPlayerController()
 {
@@ -89,14 +90,20 @@ void AIronPlayerController::LeftMousePressed()
 			SelectedUnit = HitMech;
 			if (GridClass)
 			{
+				// Snap to grid location
+				FVector Loc = HitMech->GetActorLocation();
+				Loc.X = FGenericPlatformMath::RoundToInt(Loc.X / 100.f) * 100;
+				Loc.Y = FGenericPlatformMath::RoundToInt(Loc.Y / 100.f) * 100;
+				Loc.Z = FGenericPlatformMath::RoundToInt(Loc.Z / 100.f) * 100;
+
 				if (ActionGrid)
 				{
-					ActionGrid->SetActorLocation(HitMech->GetActorLocation());
+					ActionGrid->SetActorLocation(Loc);
 					ActionGrid->DrawActionGrid(HitMech);
 				}
 				else
 				{
-					ActionGrid = GetWorld()->SpawnActor<AActionGrid>(GridClass, HitMech->GetActorLocation(), FRotator::ZeroRotator, FActorSpawnParameters());
+					ActionGrid = GetWorld()->SpawnActor<AActionGrid>(GridClass, Loc, FRotator::ZeroRotator, FActorSpawnParameters());
 					if (ActionGrid)
 					{
 						ActionGrid->DrawActionGrid(HitMech);
