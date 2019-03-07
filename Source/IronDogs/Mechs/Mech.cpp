@@ -3,6 +3,8 @@
 #include "Mech.h"
 #include "MechAIController.h"
 #include "Blueprint/AIBlueprintHelperLibrary.h"
+#include "BehaviorTree/BehaviorTree.h"
+#include "UObject/ConstructorHelpers.h"
 
 // Sets default values
 AMech::AMech()
@@ -12,6 +14,9 @@ AMech::AMech()
 
 
 	AIControllerClass = AMechAIController::StaticClass();
+
+	static ConstructorHelpers::FObjectFinder<UBehaviorTree> BTob(TEXT("BehaviorTree'/Game/Blueprints/DummyMech/Mech_BT.Mech_BT'"));
+	MechBehaviour = BTob.Object;
 }
 
 // Called when the game starts or when spawned
@@ -41,7 +46,17 @@ void AMech::AttemptToMove(FVector& NewLoc)
 	AMechAIController* MechController = Cast<AMechAIController>(GetController());
 	if (MechController)
 	{
-		UAIBlueprintHelperLibrary::SimpleMoveToLocation(MechController, NewLoc);	
+		//UAIBlueprintHelperLibrary::SimpleMoveToLocation(MechController, NewLoc);	
+		MechController->SetupDestiny(NewLoc);
+	}
+}
+
+void AMech::UpdateSelection(bool bSelectUnit)
+{
+	AMechAIController* MechController = Cast<AMechAIController>(GetController());
+	if (MechController)
+	{
+		MechController->SetupActiveState(bSelectUnit);
 	}
 }
 

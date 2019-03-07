@@ -17,8 +17,14 @@ public:
 	AMechAIController();
 
 	virtual void BeginPlay() override;
+	virtual void Possess(APawn* InPawn) override;
 
 public:
+	class UBlackboardComponent* BlackboardComp;
+	class UBehaviorTreeComponent* BehaviorComp;
 
+public:
+	void SetupDestiny(FVector& NewLoc);
+	void SetupActiveState(bool bIsActive);
 
 };

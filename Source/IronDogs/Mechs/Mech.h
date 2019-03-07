@@ -28,11 +28,12 @@ public:
 
 public:
 	void AttemptToMove(FVector& NewLoc);
+	void UpdateSelection(bool bSelectUnit);
 
 
 public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 		int32 AP;
-
+	class UBehaviorTree* MechBehaviour;
 
 };

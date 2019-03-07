@@ -87,7 +87,14 @@ void AIronPlayerController::LeftMousePressed()
 		AMech* HitMech = Cast<AMech>(Hit.GetActor());
 		if (HitMech)
 		{
+			// Update blackboard selection
+			if (SelectedUnit)
+			{
+				SelectedUnit->UpdateSelection(false);
+			}
+
 			SelectedUnit = HitMech;
+			SelectedUnit->UpdateSelection(true);
 			if (GridClass)
 			{
 				// Snap to grid location
