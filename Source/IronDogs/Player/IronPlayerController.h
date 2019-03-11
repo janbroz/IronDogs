@@ -21,6 +21,7 @@ public:
 private:
 	void SpawnPlayerHUD();
 	void UpdateSelectedUnit_UI();
+	bool IsPlayerAllowedToMove();
 
 public:
 	void HorizontalMovement(float Amount);
@@ -28,6 +29,10 @@ public:
 
 	void LeftMousePressed();
 	void RightMousePressed();
+
+	// UI update functions
+	UFUNCTION()
+		void UpdatePlayerTurn(bool bIsPlayerTurn);
 
 	
 public:

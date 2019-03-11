@@ -17,5 +17,8 @@ public:
 
 	UFUNCTION(BlueprintImplementableEvent)
 		void UpdateSelectedUnit(class AMech* ActualMech);
-	
+	UFUNCTION(BlueprintImplementableEvent)
+		void UpdatePlayerTurn(bool bIsPlayerTurn);
+
+
 };

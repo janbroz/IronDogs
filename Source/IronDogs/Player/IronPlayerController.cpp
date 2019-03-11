@@ -8,6 +8,7 @@
 #include "Mechs/Mech.h"
 #include "Mechs/ActionGrid.h"
 #include "GenericPlatformMath.h"
+#include "IronDogsGameModeBase.h"
 
 AIronPlayerController::AIronPlayerController()
 {
@@ -59,6 +60,13 @@ void AIronPlayerController::UpdateSelectedUnit_UI()
 	{
 		PlayerHUD->UpdateSelectedUnit(SelectedUnit);
 	}
+}
+
+bool AIronPlayerController::IsPlayerAllowedToMove()
+{
+	AIronDogsGameModeBase* GameMode = Cast<AIronDogsGameModeBase>(GetWorld()->GetAuthGameMode());
+	bool bAllowed = GameMode ? GameMode->bIsPlayerTurn : false;
+	return bAllowed;
 }
 
 void AIronPlayerController::HorizontalMovement(float Amount)
@@ -125,6 +133,11 @@ void AIronPlayerController::LeftMousePressed()
 
 void AIronPlayerController::RightMousePressed()
 {
+	if (!IsPlayerAllowedToMove())
+	{
+		return;
+	}
+
 	FHitResult Hit;
 	GetHitResultUnderCursor(ECollisionChannel::ECC_Camera, true, Hit);
 	if (Hit.bBlockingHit)
@@ -134,4 +147,12 @@ void AIronPlayerController::RightMousePressed()
 			SelectedUnit->AttemptToMove(Hit.Location);
 		}
 	}
+}
+
+void AIronPlayerController::UpdatePlayerTurn(bool bIsPlayerTurn)
+{
+	if (!PlayerHUD) return;
+
+	PlayerHUD->UpdatePlayerTurn(bIsPlayerTurn);
+
 }

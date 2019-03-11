@@ -16,6 +16,22 @@ class IRONDOGS_API AIronDogsGameModeBase : public AGameModeBase
 public:
 	AIronDogsGameModeBase();
 
+	virtual void StartPlay() override;
+
 public:
-	
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = GameFlow)
+		uint32 bIsPlayerTurn : 1;
+
+	FTimerHandle EnemyTurnHandle;
+
+public:
+	UFUNCTION(BlueprintCallable)
+		void SimulateEnemyTurn();
+
+	UFUNCTION(BlueprintCallable)
+		void FinishPlayerTurn();
+
+private:
+	void UpdatePlayerTurnUI(bool bTurnActive);
+
 };
