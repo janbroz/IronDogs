@@ -92,6 +92,13 @@ void AIronPlayerController::LeftMousePressed()
 	GetHitResultUnderCursor(ECollisionChannel::ECC_Camera, true, Hit);
 	if (Hit.bBlockingHit)
 	{
+
+		/*AActor* HitActor = Hit.GetActor();
+		if (HitActor)
+		{
+			UE_LOG(LogTemp, Warning, TEXT("Who knows %s"), *HitActor->GetName());
+		}*/
+
 		AMech* HitMech = Cast<AMech>(Hit.GetActor());
 		if (HitMech)
 		{
@@ -139,12 +146,16 @@ void AIronPlayerController::RightMousePressed()
 	}
 
 	FHitResult Hit;
-	GetHitResultUnderCursor(ECollisionChannel::ECC_Camera, true, Hit);
+	GetHitResultUnderCursor(ECollisionChannel::ECC_Visibility, true, Hit);
 	if (Hit.bBlockingHit)
 	{
 		if (SelectedUnit)
 		{
 			SelectedUnit->AttemptToMove(Hit.Location);
+		}
+		else
+		{
+			UE_LOG(LogTemp, Warning, TEXT("Who knows %s"), *Hit.GetActor()->GetName());
 		}
 	}
 }
