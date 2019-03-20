@@ -17,11 +17,13 @@ public:
 	AIronPlayerController();
 	virtual void SetupInputComponent() override;
 	virtual void BeginPlay() override;
+	virtual void Tick(float DeltaSeconds) override;
 
 private:
 	void SpawnPlayerHUD();
 	void UpdateSelectedUnit_UI();
 	bool IsPlayerAllowedToMove();
+	void UpdateMovementGrid();
 
 public:
 	void HorizontalMovement(float Amount);
@@ -29,6 +31,9 @@ public:
 
 	void LeftMousePressed();
 	void RightMousePressed();
+
+	// TODO - For testing only
+	void TEST_WILDCARD_BUTTON();
 
 	// UI update functions
 	UFUNCTION()
@@ -43,6 +48,10 @@ public:
 		TArray<class AMech*> AvailableUnits;
 	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = Resources)
 		class AMech* SelectedUnit;
+	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = Resources)
+		class AMovementGrid* MovementGrid;
+	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = Resources)
+		uint32 bMovingAUnit : 1;
 
 	TSubclassOf<class UPlayerHUDWidget> PlayerHUDClass;
 	class UPlayerHUDWidget* PlayerHUD;

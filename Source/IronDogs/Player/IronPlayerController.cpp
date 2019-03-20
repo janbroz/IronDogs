@@ -9,6 +9,7 @@
 #include "Mechs/ActionGrid.h"
 #include "GenericPlatformMath.h"
 #include "IronDogsGameModeBase.h"
+#include "ActionGrid/MovementGrid.h"
 
 AIronPlayerController::AIronPlayerController()
 {
@@ -29,6 +30,7 @@ void AIronPlayerController::SetupInputComponent()
 
 	InputComponent->BindAction("LeftMousePressed", IE_Pressed, this, &AIronPlayerController::LeftMousePressed);
 	InputComponent->BindAction("RightMousePressed", IE_Pressed, this, &AIronPlayerController::RightMousePressed);
+	InputComponent->BindAction("TEST_BUTTON", IE_Pressed, this, &AIronPlayerController::TEST_WILDCARD_BUTTON);
 
 	InputComponent->BindAxis("HorizontalMovement", this, &AIronPlayerController::HorizontalMovement);
 	InputComponent->BindAxis("VerticalMovement", this, &AIronPlayerController::VerticalMovement);
@@ -40,6 +42,13 @@ void AIronPlayerController::BeginPlay()
 
 	IronPawn = Cast<APlayerPawn>(GetPawn());
 	SpawnPlayerHUD();
+}
+
+void AIronPlayerController::Tick(float DeltaSeconds)
+{
+	Super::Tick(DeltaSeconds);
+
+	UpdateMovementGrid();
 }
 
 void AIronPlayerController::SpawnPlayerHUD()
@@ -67,6 +76,30 @@ bool AIronPlayerController::IsPlayerAllowedToMove()
 	AIronDogsGameModeBase* GameMode = Cast<AIronDogsGameModeBase>(GetWorld()->GetAuthGameMode());
 	bool bAllowed = GameMode ? GameMode->bIsPlayerTurn : false;
 	return bAllowed;
+}
+
+void AIronPlayerController::UpdateMovementGrid()
+{
+	// We should update and modify the movement grid.
+	if (bMovingAUnit)
+	{
+		if (MovementGrid)
+		{
+			//UE_LOG(LogTemp, Warning, TEXT("Movement grid exist"));
+
+			FHitResult Hit;
+			GetHitResultUnderCursor(ECollisionChannel::ECC_Visibility, true, Hit);
+			if (Hit.bBlockingHit)
+			{
+				MovementGrid->DrawLines(SelectedUnit, Hit.Location);
+			}
+		}
+		else
+		{
+			MovementGrid = GetWorld()->SpawnActor<AMovementGrid>(AMovementGrid::StaticClass(), FActorSpawnParameters());
+			//UE_LOG(LogTemp, Warning, TEXT("Movement grid does not exist"));
+		}
+	}
 }
 
 void AIronPlayerController::HorizontalMovement(float Amount)
@@ -158,6 +191,11 @@ void AIronPlayerController::RightMousePressed()
 			UE_LOG(LogTemp, Warning, TEXT("Who knows %s"), *Hit.GetActor()->GetName());
 		}
 	}
+}
+
+void AIronPlayerController::TEST_WILDCARD_BUTTON()
+{
+	bMovingAUnit = !bMovingAUnit;
 }
 
 void AIronPlayerController::UpdatePlayerTurn(bool bIsPlayerTurn)
