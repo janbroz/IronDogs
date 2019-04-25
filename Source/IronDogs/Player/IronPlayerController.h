@@ -56,7 +56,7 @@ public:
 	TSubclassOf<class UPlayerHUDWidget> PlayerHUDClass;
 	class UPlayerHUDWidget* PlayerHUD;
 
-	TSubclassOf<class AActionGrid> GridClass;
-	class AActionGrid* ActionGrid;
+	TSubclassOf<class AMovementGrid> GridClass;
+	class AMovementGrid* ActionGrid;
 
 };

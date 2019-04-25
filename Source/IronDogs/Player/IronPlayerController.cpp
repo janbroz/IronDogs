@@ -21,7 +21,13 @@ AIronPlayerController::AIronPlayerController()
 		PlayerHUDClass = PlayerHUDClass_BP.Object;
 	}
 
-	GridClass = AActionGrid::StaticClass();
+	static ConstructorHelpers::FObjectFinder<UClass> MovementGridClass_BP(TEXT("/Game/Blueprints/GridTest/HexagonalGrid/Hexor.Hexor_C"));
+	if (MovementGridClass_BP.Object)
+	{
+		GridClass = MovementGridClass_BP.Object;
+	}
+
+	//GridClass = AActionGrid::StaticClass();
 }
 
 void AIronPlayerController::SetupInputComponent()
@@ -83,22 +89,22 @@ void AIronPlayerController::UpdateMovementGrid()
 	// We should update and modify the movement grid.
 	if (bMovingAUnit)
 	{
-		if (MovementGrid)
-		{
-			//UE_LOG(LogTemp, Warning, TEXT("Movement grid exist"));
+		//if (MovementGrid)
+		//{
+		//	//UE_LOG(LogTemp, Warning, TEXT("Movement grid exist"));
 
-			FHitResult Hit;
-			GetHitResultUnderCursor(ECollisionChannel::ECC_Visibility, true, Hit);
-			if (Hit.bBlockingHit)
-			{
-				MovementGrid->DrawLines(SelectedUnit, Hit.Location);
-			}
-		}
-		else
-		{
-			MovementGrid = GetWorld()->SpawnActor<AMovementGrid>(AMovementGrid::StaticClass(), FActorSpawnParameters());
-			//UE_LOG(LogTemp, Warning, TEXT("Movement grid does not exist"));
-		}
+		//	FHitResult Hit;
+		//	GetHitResultUnderCursor(ECollisionChannel::ECC_Visibility, true, Hit);
+		//	if (Hit.bBlockingHit)
+		//	{
+		//		MovementGrid->DrawLines(SelectedUnit, Hit.Location);
+		//	}
+		//}
+		//else
+		//{
+		//	MovementGrid = GetWorld()->SpawnActor<AMovementGrid>(AMovementGrid::StaticClass(), FActorSpawnParameters());
+		//	//UE_LOG(LogTemp, Warning, TEXT("Movement grid does not exist"));
+		//}
 	}
 }
 
@@ -125,13 +131,6 @@ void AIronPlayerController::LeftMousePressed()
 	GetHitResultUnderCursor(ECollisionChannel::ECC_Camera, true, Hit);
 	if (Hit.bBlockingHit)
 	{
-
-		/*AActor* HitActor = Hit.GetActor();
-		if (HitActor)
-		{
-			UE_LOG(LogTemp, Warning, TEXT("Who knows %s"), *HitActor->GetName());
-		}*/
-
 		AMech* HitMech = Cast<AMech>(Hit.GetActor());
 		if (HitMech)
 		{
@@ -149,19 +148,22 @@ void AIronPlayerController::LeftMousePressed()
 				FVector Loc = HitMech->GetActorLocation();
 				Loc.X = FGenericPlatformMath::RoundToInt(Loc.X / 100.f) * 100;
 				Loc.Y = FGenericPlatformMath::RoundToInt(Loc.Y / 100.f) * 100;
-				Loc.Z = FGenericPlatformMath::RoundToInt(Loc.Z / 100.f) * 100;
+				//Loc.Z = FGenericPlatformMath::RoundToInt(Loc.Z / 100.f) * 100;
 
 				if (ActionGrid)
 				{
 					ActionGrid->SetActorLocation(Loc);
-					ActionGrid->DrawActionGrid(HitMech);
+					ActionGrid->UpdateSelectedUnit(HitMech);
+					//ActionGrid->DrawActionGrid(HitMech);
 				}
 				else
 				{
-					ActionGrid = GetWorld()->SpawnActor<AActionGrid>(GridClass, Loc, FRotator::ZeroRotator, FActorSpawnParameters());
+					ActionGrid = GetWorld()->SpawnActor<AMovementGrid>(GridClass, Loc, FRotator::ZeroRotator, FActorSpawnParameters());
 					if (ActionGrid)
 					{
-						ActionGrid->DrawActionGrid(HitMech);
+						ActionGrid->UpdateSelectedUnit(HitMech);
+
+						//ActionGrid->DrawActionGrid(HitMech);
 					}
 				}
 			}

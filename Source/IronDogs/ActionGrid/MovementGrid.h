@@ -4,6 +4,7 @@
 
 #include "CoreMinimal.h"
 #include "GameFramework/Actor.h"
+#include "HexLibrary.h"
 #include "MovementGrid.generated.h"
 
 UCLASS()
@@ -23,13 +24,29 @@ public:
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;
 
-	// Movement
-	void DrawLines(AActor* Origin, FVector Target);
-
+	virtual void OnConstruction(const FTransform & Transform) override;
 private:
+	void DrawGrid();
 	void DrawHexagon(FVector& Loc, float Size = 50.f);
 
 public:
-	UPROPERTY(BlueprintReadWrite, VisibleAnywhere, Category = "Scene information")
+	void DrawRange(const FVector& Loc, int32 Range);
+
+	// Movement
+	void DrawLines(AActor* Origin, FVector Target);
+
+	void UpdateSelectedUnit(class AMech* SelectedMech);
+
+
+public:
+	UPROPERTY(BlueprintReadWrite, VisibleAnywhere, Category = "Default")
 		USceneComponent* SceneComp;
+	UPROPERTY(BlueprintReadWrite, VisibleAnywhere, Category = "Default")
+		class UInstancedStaticMeshComponent* InstantiatedMeshComp;
+	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "Default")
+		int32 Range;
+	UPROPERTY(BlueprintReadWrite, VisibleAnywhere, Category = "Default")
+		TArray<FHex> HexGridArray;
+	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "Default")
+		int32 Size;
 };

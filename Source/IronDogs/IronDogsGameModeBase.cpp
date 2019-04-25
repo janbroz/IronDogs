@@ -17,7 +17,7 @@ void AIronDogsGameModeBase::StartPlay()
 	Super::StartPlay();
 
 
-	GetWorldTimerManager().SetTimer(EnemyTurnHandle, this, &AIronDogsGameModeBase::SimulateEnemyTurn, 5.f, false, 5.f);
+	GetWorldTimerManager().SetTimer(EnemyTurnHandle, this, &AIronDogsGameModeBase::SimulateEnemyTurn, 1.f, false, 1.f);
 	UpdatePlayerTurnUI(false);
 }
 
